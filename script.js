@@ -54,6 +54,17 @@ function addTaskToDOM(taskText, completed) {
     span.classList.add("completed");
   }
 
+  const editBtn = document.createElement("button");
+  editBtn.textContent = "Edytuj";
+  editBtn.classList.add("edit-btn");
+  editBtn.onclick = function () {
+    const newText = prompt("Edytuj zadanie:", span.textContent);
+    if (newText && newText.trim() !== "" && newText !== taskText) {
+      editTask(taskText, newText.trim());
+      loadTasks();
+    }
+  };
+
   taskContent.appendChild(checkbox);
   taskContent.appendChild(span);
 
@@ -66,6 +77,7 @@ function addTaskToDOM(taskText, completed) {
   };
 
   li.appendChild(taskContent);
+  li.appendChild(editBtn);
   li.appendChild(deleteBtn);
   taskList.appendChild(li);
 }
@@ -85,6 +97,14 @@ function deleteTask(text) {
 function updateTask(text, completed) {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   tasks = tasks.map((t) => (t.text === text ? { text: t.text, completed } : t));
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function editTask(oldText, newText) {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  tasks = tasks.map((t) =>
+    t.text === oldText ? { text: newText, completed: t.completed } : t
+  );
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
